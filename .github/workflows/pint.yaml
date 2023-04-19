@@ -20,6 +20,19 @@ jobs:
         ref: ${{ github.head_ref }}
 
     -
+       name: Set $FILES
+       run: |
+
+         git remote -v
+         git branch -v -a
+         FILES=$(git diff --diff-filter=d --name-only origin/master | tr '\n' ' '|sed 's/,*$//g')
+         echo $FILES
+
+         echo 'FILES<<EOF' >> $GITHUB_ENV
+         echo $FILES >> $GITHUB_ENV
+         echo 'EOF' >> $GITHUB_ENV
+
+    -
       name: Composer install
       run: composer global require --no-progress -- laravel/pint
 
