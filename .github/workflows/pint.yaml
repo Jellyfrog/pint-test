@@ -19,21 +19,13 @@ jobs:
       with:
         ref: ${{ github.head_ref }}
 
-#    -
-#      name: Set up PHP
-#      uses: shivammathur/setup-php@v2
-#      with:
-#        php-version: ${{ matrix.php }}
-#        tools: composer
-#        coverage: none
-
     -
       name: Composer install
       run: composer global require --no-progress -- laravel/pint
 
     -
       name: Run Laravel Pint
-      run: pwd; find /home/runner; .composer/vendor/bin/pint -v
+      run: /home/runner/.composer/vendor/bin/pint -v
 
 
 #    - name: "laravel-pint"
