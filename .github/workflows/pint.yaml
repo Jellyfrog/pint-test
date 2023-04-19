@@ -54,7 +54,7 @@ jobs:
 
     -
       name: Run Laravel Pint
-      run: ./vendor/bin/pint -v
+      run: pint -v
 
 
 #    - name: "laravel-pint"
