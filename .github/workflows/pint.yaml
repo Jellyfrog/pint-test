@@ -1,4 +1,4 @@
-name: laravel-pint
+name: Lint
 
 on:
   pull_request:
@@ -8,10 +8,9 @@ on:
   issue_comment:
     types: [created]
 
-
-
 jobs:
   laravel-pint:
+    name: Laravel Pint
     if: |
       (github.event.issue.pull_request && contains(github.event.comment.body, '/autofix')) ||
       ! github.event.issue
@@ -20,17 +19,6 @@ jobs:
     permissions:
       # Give the default GITHUB_TOKEN write permission to commit and push the changed files back to the repository.
       contents: write
-
-    steps:
-    - name: Dump GitHub context
-      env:
-        GITHUB_CONTEXT: ${{ toJson(github) }}
-      run: |
-        echo "$GITHUB_CONTEXT"
-
-        echo "-done-"
-
-        env
 
     - uses: actions/checkout@v3
 
@@ -59,16 +47,18 @@ jobs:
         echo $FILES >> "$GITHUB_ENV"
         echo 'EOF' >> "$GITHUB_ENV"
 
+        echo "FILES1=$FILES" >> "$GITHUB_ENV"
+
     - name: Composer install
       run: composer global require --no-progress -- laravel/pint
 
     - name: Run Laravel Pint
       if: ${{ !contains(github.event.comment.body, '/autofix') }}
-      run: /home/runner/.composer/vendor/bin/pint -v --test
+      run: /home/runner/.composer/vendor/bin/pint -v --test ${{ env.FILES1 }}
 
     - name: Run Laravel Pint (Autofix)
       if: contains(github.event.comment.body, '/autofix')
-      run: /home/runner/.composer/vendor/bin/pint -v
+      run: /home/runner/.composer/vendor/bin/pint -v ${{ env.FILES }}
 
     - uses: stefanzweifel/git-auto-commit-action@v4
       if: contains(github.event.comment.body, '/autofix')
