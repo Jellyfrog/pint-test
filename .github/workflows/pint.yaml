@@ -12,6 +12,9 @@ on:
 
 jobs:
   laravel-pint:
+    if: |
+      (github.event.issue.pull_request && contains(github.event.comment.body, '/autofix')) ||
+      ! github.event.issue
     runs-on: ubuntu-latest
 
     permissions:
@@ -24,16 +27,15 @@ jobs:
         ref: ${{ github.head_ref }}
 
     - name: Set $FILES
-       run: |
+      run: |
+        git remote -v
+        git branch -v -a
+        FILES=$(git diff --diff-filter=d --name-only origin/master | tr '\n' ' '|sed 's/,*$//g')
+        echo $FILES
 
-         git remote -v
-         git branch -v -a
-         FILES=$(git diff --diff-filter=d --name-only origin/master | tr '\n' ' '|sed 's/,*$//g')
-         echo $FILES
-
-         echo 'FILES<<EOF' >> $GITHUB_ENV
-         echo $FILES >> $GITHUB_ENV
-         echo 'EOF' >> $GITHUB_ENV
+        echo 'FILES<<EOF' >> $GITHUB_ENV
+        echo $FILES >> $GITHUB_ENV
+        echo 'EOF' >> $GITHUB_ENV
 
     - name: Composer install
       run: composer global require --no-progress -- laravel/pint
@@ -42,9 +44,7 @@ jobs:
       run: /home/runner/.composer/vendor/bin/pint -v
 
     - uses: stefanzweifel/git-auto-commit-action@v4
-      if: |
-        (github.event.issue.pull_request && contains(github.event.comment.body, '/autofix')) ||
-        ! github.event.issue
+      if: contains(github.event.comment.body, '/autofix')
       with:
         commit_message: Apply Laravel Pint changes
 
