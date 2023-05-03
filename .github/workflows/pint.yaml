@@ -24,18 +24,10 @@ jobs:
     - uses: actions/checkout@v3
 
     - name: Checkout Pull Request
+      if: github.event.issue
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        ISSUE_NR="${{ github.event.issue.number }}"
-        PR_NR="${{ github.event.number }}"
-
-        if [ -z "$ISSUE_NR" ]
-        then
-          hub pr checkout $PR_NR
-        else
-          hub pr checkout $ISSUE_NR
-        fi
+      run: hub pr checkout "${{ github.event.issue.number }}"
 
     - name: Set $FILES
       run: |
@@ -43,24 +35,18 @@ jobs:
         git branch -v -a
         FILES=$(git diff --diff-filter=d --name-only origin/main | tr '\n' ' '|sed 's/,*$//g')
         echo $FILES
-
-        echo 'FILES<<EOF' >> "$GITHUB_ENV"
-        echo $FILES >> "$GITHUB_ENV"
-        echo 'EOF' >> "$GITHUB_ENV"
-
-        echo "FILES1=$FILES" >> "$GITHUB_ENV"
-
+        echo "FILES=$FILES" >> "$GITHUB_ENV"
 
     - name: Composer install
       run: composer global require --no-progress -- laravel/pint
 
     - name: Run Laravel Pint
       if: ${{ !contains(github.event.comment.body, '/autofix') }}
-      run: /home/runner/.composer/vendor/bin/pint -v --test ${{ env.FILES1 }}
+      run: /home/runner/.composer/vendor/bin/pint -v --test ${{ env.FILES }}
 
     - name: Run Laravel Pint (Autofix)
       if: contains(github.event.comment.body, '/autofix')
-      run: /home/runner/.composer/vendor/bin/pint -v ${{ env.FILES1 }}
+      run: /home/runner/.composer/vendor/bin/pint -v ${{ env.FILES }}
 
     - uses: stefanzweifel/git-auto-commit-action@v4
       if: contains(github.event.comment.body, '/autofix')
