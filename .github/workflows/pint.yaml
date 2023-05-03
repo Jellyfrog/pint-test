@@ -38,39 +38,39 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        PR_URL="${{ github.event.issue.pull_request.url }}"
-        PR_NUM=${PR_URL##*/}
-        echo "Checking out from PR #$PR_NUM based on URL: $PR_URL"
-        hub pr checkout $PR_NUM
+        ISSUE_NR="${{ github.event.issue.number }}"
+        PR_NR="${{ github.event.number }}"
 
+        if [ -z "$ISSUE_NR" ]
+        then
+          hub pr checkout $PR_NR
+        else
+          hub pr checkout $ISSUE_NR
+        fi
 
     - name: Set $FILES
       run: |
         git remote -v
         git branch -v -a
-        FILES=$(git diff --diff-filter=d --name-only origin/master | tr '\n' ' '|sed 's/,*$//g')
+        FILES=$(git diff --diff-filter=d --name-only origin/main | tr '\n' ' '|sed 's/,*$//g')
         echo $FILES
 
-        echo 'FILES<<EOF' >> $GITHUB_ENV
-        echo $FILES >> $GITHUB_ENV
-        echo 'EOF' >> $GITHUB_ENV
+        echo 'FILES<<EOF' >> "$GITHUB_ENV"
+        echo $FILES >> "$GITHUB_ENV"
+        echo 'EOF' >> "$GITHUB_ENV"
 
     - name: Composer install
       run: composer global require --no-progress -- laravel/pint
 
     - name: Run Laravel Pint
+      if: ! contains(github.event.comment.body, '/autofix')
+      run: /home/runner/.composer/vendor/bin/pint -v --test
+
+    - name: Run Laravel Pint (Autofix)
+      if: contains(github.event.comment.body, '/autofix')
       run: /home/runner/.composer/vendor/bin/pint -v
 
     - uses: stefanzweifel/git-auto-commit-action@v4
       if: contains(github.event.comment.body, '/autofix')
       with:
         commit_message: Apply Laravel Pint changes
-
-
-
-#    - name: "laravel-pint"
-#      uses: aglipanci/laravel-pint-action@2.2.0
-#      with:
-#        preset: laravel
-#        verboseMode: true
-#        onlyDirty: true
