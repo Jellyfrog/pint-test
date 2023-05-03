@@ -63,7 +63,7 @@ jobs:
       run: composer global require --no-progress -- laravel/pint
 
     - name: Run Laravel Pint
-      if: !contains(github.event.comment.body, '/autofix')
+      if: ${{ !contains(github.event.comment.body, '/autofix') }}
       run: /home/runner/.composer/vendor/bin/pint -v --test
 
     - name: Run Laravel Pint (Autofix)
