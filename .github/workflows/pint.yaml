@@ -20,6 +20,7 @@ jobs:
       # Give the default GITHUB_TOKEN write permission to commit and push the changed files back to the repository.
       contents: write
 
+    steps:
     - uses: actions/checkout@v3
 
     - name: Checkout Pull Request
@@ -49,6 +50,7 @@ jobs:
 
         echo "FILES1=$FILES" >> "$GITHUB_ENV"
 
+
     - name: Composer install
       run: composer global require --no-progress -- laravel/pint
 
@@ -58,7 +60,7 @@ jobs:
 
     - name: Run Laravel Pint (Autofix)
       if: contains(github.event.comment.body, '/autofix')
-      run: /home/runner/.composer/vendor/bin/pint -v ${{ env.FILES }}
+      run: /home/runner/.composer/vendor/bin/pint -v ${{ env.FILES1 }}
 
     - uses: stefanzweifel/git-auto-commit-action@v4
       if: contains(github.event.comment.body, '/autofix')
