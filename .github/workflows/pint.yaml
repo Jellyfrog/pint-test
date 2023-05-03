@@ -11,32 +11,6 @@ on:
 
 
 jobs:
-  pr_commented:
-    # This job only runs for pull request comments
-    name: PR comment
-    if: |
-      (github.event.issue.pull_request && contains(github.event.comment.body, '/autofix')) ||
-      ! github.event.issue
-
-    runs-on: ubuntu-latest
-    steps:
-      - run: |
-          echo A comment on PR $NUMBER
-        env:
-          NUMBER: ${{ github.event.issue.number }}
-
-  issue_commented:
-    # This job only runs for issue comments
-    name: Issue comment
-    if: ${{ !github.event.issue.pull_request }}
-    runs-on: ubuntu-latest
-    steps:
-      - run: |
-          echo A comment on issue $NUMBER
-        env:
-          NUMBER: ${{ github.event.issue.number }}
-
-
   laravel-pint:
     runs-on: ubuntu-latest
 
@@ -45,26 +19,11 @@ jobs:
       contents: write
 
     steps:
-    - name: Dump GitHub context
-      env:
-        GITHUB_CONTEXT: ${{ toJson(github) }}
-      run: |
-        echo "$GITHUB_CONTEXT"
-
-    - name: Dump GitHub context
-      if: ${{ github.event.issue.pull_request }}
-      run: |
-        echo "Running for comment /fix"
-
-
-
-
     - uses: actions/checkout@v3
       with:
         ref: ${{ github.head_ref }}
 
-    -
-       name: Set $FILES
+    - name: Set $FILES
        run: |
 
          git remote -v
@@ -76,13 +35,19 @@ jobs:
          echo $FILES >> $GITHUB_ENV
          echo 'EOF' >> $GITHUB_ENV
 
-    -
-      name: Composer install
+    - name: Composer install
       run: composer global require --no-progress -- laravel/pint
 
-    -
-      name: Run Laravel Pint
+    - name: Run Laravel Pint
       run: /home/runner/.composer/vendor/bin/pint -v
+
+    - uses: stefanzweifel/git-auto-commit-action@v4
+      if: |
+        (github.event.issue.pull_request && contains(github.event.comment.body, '/autofix')) ||
+        ! github.event.issue
+      with:
+        commit_message: Apply Laravel Pint changes
+
 
 
 #    - name: "laravel-pint"
@@ -91,7 +56,3 @@ jobs:
 #        preset: laravel
 #        verboseMode: true
 #        onlyDirty: true
-
-    #- uses: stefanzweifel/git-auto-commit-action@v4
-    #  with:
-    #    commit_message: Apply Laravel Pint changes
