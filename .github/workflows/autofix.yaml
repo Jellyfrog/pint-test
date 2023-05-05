@@ -1,59 +1,39 @@
-# https://securitylab.github.com/research/github-actions-preventing-pwn-requests/
 name: Autofix
 
 on:
-  workflow_run:
-    workflows: ["Lint"]
-    types:
-      - completed
+  issue_comment:
+    types: [created]
 
 jobs:
-  upload:
+  laravel-pint:
+    name: Laravel Pint
+    if: contains(github.event.comment.body, '/autofix') && github.event.issue.pull_request
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: read
+
     steps:
-      - name: Dump GitHub context
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
-        run: |
-          echo "$GITHUB_CONTEXT"
+    - uses: actions/checkout@v3
 
-      - name: 'Download artifact'
-        uses: actions/github-script@v3.1.0
-        with:
-          script: |
-            var artifacts = await github.actions.listWorkflowRunArtifacts({
-               owner: context.repo.owner,
-               repo: context.repo.repo,
-               run_id: ${{github.event.workflow_run.id }},
-            });
-            var matchArtifact = artifacts.data.artifacts.filter((artifact) => {
-              return artifact.name == "pr"
-            })[0];
-            var download = await github.actions.downloadArtifact({
-               owner: context.repo.owner,
-               repo: context.repo.repo,
-               artifact_id: matchArtifact.id,
-               archive_format: 'zip',
-            });
-            var fs = require('fs');
-            fs.writeFileSync('${{github.workspace}}/pr.zip', Buffer.from(download.data));
-      - run: unzip pr.zip
+    - name: Checkout Pull Request
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: hub pr checkout "${{ github.event.issue.number }}"
 
-#      - name: 'Comment on PR'
-#        uses: actions/github-script@v3
-#        with:
-#          github-token: ${{ secrets.GITHUB_TOKEN }}
-#          script: |
-#            var fs = require('fs');
-#            var issue_number = Number(fs.readFileSync('./NR'));
-#            await github.issues.createComment({
-#              owner: context.repo.owner,
-#              repo: context.repo.repo,
-#              issue_number: issue_number,
-#              body: 'Everything is OK. Thank you for the PR!'
-#            });
+    - name: Set $FILES
+      run: |
+        git remote -v
+        git branch -v -a
+        FILES=$(git diff --diff-filter=d --name-only origin/main | tr '\n' ' '|sed 's/,*$//g')
+        echo $FILES
+        echo "FILES=$FILES" >> "$GITHUB_ENV"
 
+    - name: Install Pint
+      run: composer global require --no-progress -- laravel/pint
+
+    - name: Run Pint (Autofix)
+      run: /home/runner/.composer/vendor/bin/pint -v ${{ env.FILES }}
 
 #    - uses: stefanzweifel/git-auto-commit-action@v4
 #      if: contains(github.event.comment.body, '/autofix')
