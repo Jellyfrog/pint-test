@@ -25,6 +25,8 @@ jobs:
 
     - name: Checkout Pull Request
       if: github.event.issue
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: hub pr checkout "${{ github.event.issue.number }}"
 
     - name: Set $FILES
