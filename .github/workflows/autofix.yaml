@@ -35,7 +35,7 @@ jobs:
     - name: Run Pint (Autofix)
       run: /home/runner/.composer/vendor/bin/pint -v ${{ env.FILES }}
 
-#    - uses: stefanzweifel/git-auto-commit-action@v4
-#      if: contains(github.event.comment.body, '/autofix')
-#      with:
-#        commit_message: Apply Laravel Pint changes
+    - uses: stefanzweifel/git-auto-commit-action@v4
+      if: contains(github.event.comment.body, '/autofix')
+      with:
+        commit_message: Apply Laravel Pint changes
