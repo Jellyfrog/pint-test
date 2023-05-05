@@ -16,11 +16,11 @@ jobs:
     steps:
     - uses: actions/checkout@v3
       with:
-        token: ${{ secrets.LINT_PAT }}
+        token: ${{ secrets.LINTER }}
 
     - name: Checkout Pull Request
       env:
-        GITHUB_TOKEN: ${{ secrets.LINT_PAT }}
+        GITHUB_TOKEN: ${{ secrets.LINTER }}
       run: hub pr checkout "${{ github.event.issue.number }}"
 
     - name: Set $FILES
