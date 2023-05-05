@@ -18,15 +18,13 @@ jobs:
 
     permissions:
       # Give the default GITHUB_TOKEN write permission to commit and push the changed files back to the repository.
-      contents: write
+      contents: read
 
     steps:
     - uses: actions/checkout@v3
 
     - name: Checkout Pull Request
       if: github.event.issue
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: hub pr checkout "${{ github.event.issue.number }}"
 
     - name: Set $FILES
@@ -48,7 +46,16 @@ jobs:
       if: contains(github.event.comment.body, '/autofix')
       run: /home/runner/.composer/vendor/bin/pint -v ${{ env.FILES }}
 
-    - uses: stefanzweifel/git-auto-commit-action@v4
-      if: contains(github.event.comment.body, '/autofix')
+    - name: Save PR number
+      run: |
+        mkdir -p ./pr
+        echo ${{ github.event.number }} > ./pr/NR
+    - uses: actions/upload-artifact@v2
       with:
-        commit_message: Apply Laravel Pint changes
+        name: pr
+        path: pr/
+
+#    - uses: stefanzweifel/git-auto-commit-action@v4
+#      if: contains(github.event.comment.body, '/autofix')
+#      with:
+#        commit_message: Apply Laravel Pint changes
