@@ -22,12 +22,11 @@ jobs:
     
     - uses: actions/checkout@v3
       with:
-        token: ${{ secrets.LINTER }}
+        token: ${{ secrets.LINT_PAT }}
 
     - name: Checkout Pull Request
       env:
-        GITHUB_TOKEN: ${{ secrets.LINTER }}
-        GH_TOKEN: ${{ secrets.LINTER }}
+        GH_TOKEN: ${{ secrets.LINT_PAT }}
       run: hub pr checkout "${{ github.event.issue.number }}"
 
     - name: Set $FILES
@@ -47,15 +46,14 @@ jobs:
 
     - name: Push changes
       env:
-        GITHUB_TOKEN: ${{ secrets.LINTER }}
-        GH_TOKEN: ${{ secrets.LINTER }}
+        GH_TOKEN: ${{ secrets.LINT_PAT }}
       run: |
         #gh auth login
         gh auth status
         gh auth setup-git
         cat ~/.gitconfig
-        git config user.name "Troll"
-        git config user.email "Troll@localhost"
+        git config user.name "LibreNMS Bot"
+        git config user.email "librenms-bot@users.noreply.github.com"
         git add .
         git commit -m "Apply Laravel Pint changes"
         git push
