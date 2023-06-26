@@ -51,7 +51,9 @@ jobs:
         GH_TOKEN: ${{ secrets.LINTER }}
       run: |
         #gh auth login
+        gh auth status
         gh auth setup-git
+        cat ~/.gitconfig
         git config user.name "Troll"
         git config user.email "Troll@localhost"
         git add .
