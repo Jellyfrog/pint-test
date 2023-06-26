@@ -31,7 +31,7 @@ jobs:
 
     - name: Set $FILES
       run: |
-        FILES=$(git diff --name-only origin/main... | tr '\n' ' ')
+        FILES=$(git diff --diff-filter=d --name-only origin/main... | tr '\n' ' ')
         echo $FILES
         echo "FILES=$FILES" >> "$GITHUB_ENV"
 
