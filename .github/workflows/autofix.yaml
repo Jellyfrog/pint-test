@@ -14,6 +14,12 @@ jobs:
       contents: write
 
     steps:
+    - name: Dump GitHub context
+      env:
+        GITHUB_CONTEXT: ${{ toJson(github) }}
+      run: |
+        echo "$GITHUB_CONTEXT"    
+    
     - uses: actions/checkout@v3
       with:
         token: ${{ secrets.LINTER }}
@@ -21,6 +27,7 @@ jobs:
     - name: Checkout Pull Request
       env:
         GITHUB_TOKEN: ${{ secrets.LINTER }}
+        GH_TOKEN: ${{ secrets.LINTER }}
       run: hub pr checkout "${{ github.event.issue.number }}"
 
     - name: Set $FILES
@@ -41,9 +48,12 @@ jobs:
     - name: Push changes
       env:
         GITHUB_TOKEN: ${{ secrets.LINTER }}
+        GH_TOKEN: ${{ secrets.LINTER }}
       run: |
-        git config user.name "Troll"
-        git config user.email "Troll@localhost"
+        gh auth login
+        gh auth setup-git
+        #git config user.name "Troll"
+        #git config user.email "Troll@localhost"
         git add .
         git commit -m "Apply Laravel Pint changes"
         git push
