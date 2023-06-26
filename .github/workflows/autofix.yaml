@@ -52,8 +52,8 @@ jobs:
       run: |
         #gh auth login
         gh auth setup-git
-        #git config user.name "Troll"
-        #git config user.email "Troll@localhost"
+        git config user.name "Troll"
+        git config user.email "Troll@localhost"
         git add .
         git commit -m "Apply Laravel Pint changes"
         git push
