@@ -19,7 +19,7 @@ jobs:
         GITHUB_CONTEXT: ${{ toJson(github) }}
       run: |
         echo "$GITHUB_CONTEXT"    
-    
+
     - uses: actions/checkout@v3
       with:
         token: ${{ secrets.LINT_PAT }}
@@ -43,22 +43,12 @@ jobs:
     - name: Run Pint (Autofix)
       run: /home/runner/.composer/vendor/bin/pint -v ${{ env.FILES }}
 
-
     - name: Push changes
       env:
         GH_TOKEN: ${{ secrets.LINT_PAT }}
       run: |
-        #gh auth login
-        gh auth status
-        gh auth setup-git
-        cat ~/.gitconfig
         git config user.name "LibreNMS Bot"
         git config user.email "librenms-bot@users.noreply.github.com"
         git add .
         git commit -m "Apply Laravel Pint changes"
         git push
-
-#    - uses: stefanzweifel/git-auto-commit-action@v4
-#      if: contains(github.event.comment.body, '/autofix')
-#      with:
-#        commit_message: Apply Laravel Pint changes
