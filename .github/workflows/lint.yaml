@@ -19,7 +19,7 @@ jobs:
 
     - name: Set $FILES
       run: |
-        FILES=$(git diff --diff-filter=d --name-only origin/main... | tr '\n' ' ')
+        FILES=$(git diff --diff-filter=d --name-only origin/main | tr '\n' ' ' | sed 's/,*$//g')
         echo $FILES
         echo "FILES=$FILES" >> "$GITHUB_ENV"
 
