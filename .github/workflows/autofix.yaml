@@ -50,7 +50,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.LINTER }}
         GH_TOKEN: ${{ secrets.LINTER }}
       run: |
-        gh auth login
+        #gh auth login
         gh auth setup-git
         #git config user.name "Troll"
         #git config user.email "Troll@localhost"
