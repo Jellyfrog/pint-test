@@ -1,5 +1,11 @@
 name: Lint new
 
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
 jobs:
   laravel-pint:
     uses: ./.github/workflows/pint.yaml

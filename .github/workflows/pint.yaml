@@ -1,5 +1,8 @@
 name: Laravel Pint
 
+on:
+  workflow_call:
+
 jobs:
   laravel-pint:
     name: Laravel Pint
