@@ -1,0 +1,5 @@
+name: Lint new
+
+jobs:
+  laravel-pint:
+    uses: ./.github/jobs/pint.yaml

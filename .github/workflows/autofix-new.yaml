@@ -1,0 +1,10 @@
+name: Autofix new
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  laravel-pint:
+    uses: ./.github/jobs/pint.yaml
+    if: contains(github.event.comment.body, '/autofix') && github.event.issue.pull_request
