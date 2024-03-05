@@ -2,4 +2,4 @@ name: Lint new
 
 jobs:
   laravel-pint:
-    uses: ./.github/workflows/jobs/pint.yaml
+    uses: ./.github/workflows/pint.yaml
