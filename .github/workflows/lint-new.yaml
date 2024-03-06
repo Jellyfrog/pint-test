@@ -15,4 +15,4 @@ jobs:
     with:
       autofix: true
     secrets:
-      LINT_PAT: ${{ secrets.LINT_PAT }}
+      lint_pat: ${{ secrets.LINT_PAT }}
