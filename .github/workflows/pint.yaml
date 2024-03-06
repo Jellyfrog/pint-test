@@ -2,6 +2,10 @@ name: Laravel Pint
 
 on:
   workflow_call:
+    inputs:
+      autofix:
+        required: false
+        type: string
 
 jobs:
   laravel-pint:
@@ -28,7 +32,7 @@ jobs:
 
     - name: Run Pint (Autofix)
       run: /home/runner/.composer/vendor/bin/pint -v ${{ env.FILES }}
-      if: ${{ secrets.LINT_PAT }}
+      if: ${{ input.autofix }}
 
 #    - name: Push changes (Autofix)
 #      env:
