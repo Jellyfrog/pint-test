@@ -10,7 +10,7 @@ jobs:
     with:
       autofix: true
     secrets:
-      lint_PATH: ${{ secrets.LINT_PAT }}
+      lint_PAT: ${{ secrets.LINT_PAT }}
     if: >-
       contains(github.event.comment.body, '/autofix') &&
       github.event.issue.pull_request
