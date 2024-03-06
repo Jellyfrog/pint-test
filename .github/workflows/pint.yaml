@@ -4,8 +4,9 @@ on:
   workflow_call:
     inputs:
       autofix:
+        default: false
         required: false
-        type: string
+        type: boolean
     secrets:
       lint_pat:
         required: false
@@ -46,4 +47,4 @@ jobs:
         git add .
         git commit -m "Apply Laravel Pint changes"
         git push
-      if: ${{ secrets.lint_path }}
+      if: ${{ inputs.lint_path }}
