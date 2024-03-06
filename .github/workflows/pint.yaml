@@ -18,8 +18,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-      #with:
-      #  token: ${{ secrets.lint_PAT }}
+      with:
+        token: ${{ secrets.lint_PAT || secrets.GITHUB_TOKEN }}
 
     - name: Checkout Pull Request
       run: gh pr checkout ${{ github.event.issue.number }}
