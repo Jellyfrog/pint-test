@@ -7,6 +7,8 @@ on:
 jobs:
   laravel-pint:
     uses: ./.github/workflows/pint.yaml
-    if: contains(github.event.comment.body, '/autofix') && github.event.issue.pull_request
+    with:
+      autofix: true
     secrets:
-      LINT_PAT: ${{ secrets.LINT_PAT }}
+      lint_pat: ${{ secrets.LINT_PAT }}
+    if: contains(github.event.comment.body, '/autofix') && github.event.issue.pull_request

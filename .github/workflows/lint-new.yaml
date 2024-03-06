@@ -9,10 +9,3 @@ on:
 jobs:
   laravel-pint:
     uses: ./.github/workflows/pint.yaml
-
-  laravel-pint2:
-    uses: ./.github/workflows/pint.yaml
-    with:
-      autofix: true
-    secrets:
-      lint_pat: ${{ secrets.LINT_PAT }}
