@@ -16,10 +16,15 @@ jobs:
     name: Laravel Pint
     runs-on: ubuntu-latest
 
+    permissions:
+      # Give the default GITHUB_TOKEN write permission to commit and push the
+      # added or changed files to the repository.
+      contents: write
+
     steps:
     - uses: actions/checkout@v4
-      with:
-        token: ${{ secrets.lint_PAT }}
+      #with:
+      #  token: ${{ secrets.lint_PAT }}
 
     - name: Checkout Pull Request
       run: gh pr checkout ${{ github.event.issue.number }}
