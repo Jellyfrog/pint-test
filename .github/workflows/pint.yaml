@@ -26,6 +26,9 @@ jobs:
 
     - name: Checkout Pull Request
       run: gh pr checkout "${{ github.event.issue.number }}"
+      env:
+        GH_TOKEN: ${{ secrets.LINT_PAT }}
+      if: ${{ inputs.autofix }}
 
     - name: Set $FILES
       run: |
