@@ -57,4 +57,4 @@ jobs:
       uses: stefanzweifel/git-auto-commit-action@v5
       with:
         commit_message: Apply Laravel Pint changes
-      if: ${{ inputs.autofix }}
+      if: ${{ inputs.autofix && false }}
