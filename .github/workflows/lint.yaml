@@ -12,4 +12,3 @@ permissions:
 jobs:
   laravel-pint:
     uses: ./.github/workflows/pint.yaml
-    #secrets: inherit
