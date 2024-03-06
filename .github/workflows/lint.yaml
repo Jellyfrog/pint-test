@@ -6,25 +6,10 @@ on:
     branches:
       - main
 
+permissions:
+  pull-requests: write
+
 jobs:
   laravel-pint:
-    name: Laravel Pint
-    runs-on: ubuntu-latest
-
-    permissions:
-      contents: read
-
-    steps:
-    - uses: actions/checkout@v3
-
-    - name: Set $FILES
-      run: |
-        FILES=$(git diff --diff-filter=d --name-only origin/main | tr '\n' ' ' | sed 's/,*$//g')
-        echo $FILES
-        echo "FILES=$FILES" >> "$GITHUB_ENV"
-
-    - name: Install Pint
-      run: composer global require --no-progress -- laravel/pint
-
-    - name: Run Pint
-      run: /home/runner/.composer/vendor/bin/pint -v --test ${{ env.FILES }}
+    uses: ./.github/workflows/pint.yaml
+    #secrets: inherit

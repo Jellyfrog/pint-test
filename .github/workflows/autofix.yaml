@@ -6,47 +6,11 @@ on:
 
 jobs:
   laravel-pint:
-    name: Laravel Pint
-    if: contains(github.event.comment.body, '/autofix') && github.event.issue.pull_request
-    runs-on: ubuntu-latest
-
-    permissions:
-      contents: read
-
-    steps:
-    - name: Dump GitHub context
-      env:
-        GITHUB_CONTEXT: ${{ toJson(github) }}
-      run: |
-        echo "$GITHUB_CONTEXT"    
-
-    - uses: actions/checkout@v3
-      with:
-        token: ${{ secrets.LINT_PAT }}
-
-    - name: Checkout Pull Request
-      env:
-        GH_TOKEN: ${{ secrets.LINT_PAT }}
-      run: gh pr checkout "${{ github.event.issue.number }}"
-
-    - name: Set $FILES
-      run: |
-        FILES=$(git diff --diff-filter=d --name-only origin/main... | tr '\n' ' ')
-        echo $FILES
-        echo "FILES=$FILES" >> "$GITHUB_ENV"
-
-    - name: Install Pint
-      run: composer global require --no-progress -- laravel/pint
-
-    - name: Run Pint (Autofix)
-      run: /home/runner/.composer/vendor/bin/pint -v ${{ env.FILES }}
-
-    - name: Push changes
-      env:
-        GH_TOKEN: ${{ secrets.LINT_PAT }}
-      run: |
-        git config user.name "LibreNMS Bot"
-        git config user.email "librenms-bot@users.noreply.github.com"
-        git add .
-        git commit -m "Apply Laravel Pint changes"
-        git push
+    uses: ./.github/workflows/pint.yaml
+    with:
+      autofix: true
+    secrets:
+      lint_PAT: ${{ secrets.LINT_PAT }}
+    if: >-
+      contains(github.event.comment.body, '/autofix') &&
+      github.event.issue.pull_request
