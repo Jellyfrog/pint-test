@@ -31,6 +31,7 @@ jobs:
 
     - name: Run Pint
       run: /home/runner/.composer/vendor/bin/pint -v --test ${{ env.FILES }}
+      if: ${{ ! inputs.autofix }}
 
     - name: Run Pint (Autofix)
       run: /home/runner/.composer/vendor/bin/pint -v ${{ env.FILES }}
