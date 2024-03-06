@@ -12,3 +12,5 @@ jobs:
 
   laravel-pint2:
     uses: ./.github/workflows/pint.yaml
+    secrets:
+      LINT_PAT: ${{ secrets.LINT_PAT }}

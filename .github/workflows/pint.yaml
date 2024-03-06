@@ -25,3 +25,18 @@ jobs:
 
     - name: Run Pint
       run: /home/runner/.composer/vendor/bin/pint -v --test ${{ env.FILES }}
+
+    - name: Run Pint (Autofix)
+      run: /home/runner/.composer/vendor/bin/pint -v ${{ env.FILES }}
+      if: ${{ secrets.LINT_PAT }}
+
+#    - name: Push changes (Autofix)
+#      env:
+#        GH_TOKEN: ${{ secrets.LINT_PAT }}
+#      run: |
+#        git config user.name "LibreNMS Bot"
+#        git config user.email "librenms-bot@users.noreply.github.com"
+#        git add .
+#        git commit -m "Apply Laravel Pint changes"
+#        git push
+#      if: ${{ secrets.LINT_PAT }}
