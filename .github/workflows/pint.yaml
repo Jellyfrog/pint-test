@@ -17,15 +17,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Dump GitHub context
-      env:
-        GITHUB_CONTEXT: ${{ toJson(github) }}
-      run: |
-        echo "$GITHUB_CONTEXT"
     - uses: actions/checkout@v4
 
     - name: Checkout Pull Request
-      run: gh pr checkout "${{ github.event.issue.number }}"
+      run: gh pr checkout ${{ github.event.issue.number }}
       env:
         GH_TOKEN: ${{ secrets.lint_PAT }}
       if: ${{ inputs.autofix }}
@@ -65,4 +60,4 @@ jobs:
         git add .
         git commit -m "Apply Laravel Pint changes"
         git push
-      if: ${{ inputs.lint_PAT }}
+      if: ${{ inputs.autofix }}
