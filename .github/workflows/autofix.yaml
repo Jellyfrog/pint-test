@@ -4,6 +4,9 @@ on:
   issue_comment:
     types: [created]
 
+permissions:
+  contents: write
+
 jobs:
   laravel-pint:
     uses: ./.github/workflows/pint.yaml
