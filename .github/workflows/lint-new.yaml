@@ -6,6 +6,10 @@ on:
     branches:
       - main
 
+permissions:
+  pull-requests: write
+
 jobs:
   laravel-pint:
     uses: ./.github/workflows/pint.yaml
+    #secrets: inherit
