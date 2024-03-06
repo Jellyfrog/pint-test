@@ -32,6 +32,7 @@ jobs:
         FILES=$(git diff --diff-filter=d --name-only origin/main | tr '\n' ' ' | sed 's/,*$//g')
         echo $FILES
         echo "FILES=$FILES" >> "$GITHUB_ENV"
+        echo test >> README.md
 
     - name: Install Pint
       run: composer global require --no-progress -- laravel/pint
@@ -49,12 +50,12 @@ jobs:
           Please comment `/autofix` to automatically fix the found problems.
       if: ${{ failure() && steps.pint.conclusion == 'failure' }}
 
-    - name: Run Pint (Autofix)
-      run: /home/runner/.composer/vendor/bin/pint -v ${{ env.FILES }}
-      if: ${{ inputs.autofix }}
+#    - name: Run Pint (Autofix)
+#      run: /home/runner/.composer/vendor/bin/pint -v ${{ env.FILES }}
+#      if: ${{ inputs.autofix }}
 
     - name: Push changes (Autofix)
       uses: stefanzweifel/git-auto-commit-action@v5
       with:
         commit_message: Apply Laravel Pint changes
-      if: ${{ inputs.autofix && false }}
+      if: ${{ inputs.autofix }}
