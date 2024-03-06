@@ -32,7 +32,7 @@ jobs:
 
     - name: Run Pint (Autofix)
       run: /home/runner/.composer/vendor/bin/pint -v ${{ env.FILES }}
-      if: ${{ input.autofix }}
+      if: ${{ inputs.autofix }}
 
 #    - name: Push changes (Autofix)
 #      env:
