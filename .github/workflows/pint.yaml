@@ -26,7 +26,7 @@ jobs:
       run: gh pr checkout ${{ github.event.issue.number }}
       env:
         GH_TOKEN: ${{ secrets.lint_PAT || secrets.GITHUB_TOKEN }}
-      if: ${{ inputs.autofix && false }}
+      if: ${{ inputs.autofix }}
 
     - name: Set $FILES
       run: |
